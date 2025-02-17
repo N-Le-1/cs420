@@ -136,23 +136,16 @@ public class Interpreter {
 	
 		try {
 			Object[] params = convertNameToInstance(parse.arguments);
-	
-			System.out.println("Calling method: " + parse.methodName + " on " + parse.objectName);
-			System.out.println("Arguments:");
-			for (Object param : params) {
-				System.out.println(" - " + param + " (type: " + (param == null ? "null" : param.getClass().getName()) + ")");
-			}
-	
 			Object result = ReflectionUtilities.callMethod(target, parse.methodName, params);
 	
-			if (result != null) {
-				System.out.println("Storing variable: " + parse.objectName + " = " + result);
+			
+			if (parse.answerName != null && !parse.answerName.isEmpty()) {
+				mySymbolTable.put(parse.answerName, result);
+			}
+			
+			else if (result != null) {
 				mySymbolTable.put(parse.objectName, result);
 			}
-	
-			// Print the full symbol table to check if `nextWord` is stored
-			System.out.println("Current Variables in Symbol Table: " + mySymbolTable);
-	
 			return "Method " + parse.methodName + " called successfully on " + parse.objectName + ". Result was: " + result;
 		} catch (Exception e) {
 			return "Error: " + e.getMessage();
